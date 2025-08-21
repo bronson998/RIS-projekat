@@ -3,12 +3,16 @@ package com.projekat.ris.service.impl;
 import com.projekat.ris.dto.UserRegistrationDTO;
 import com.projekat.ris.dto.UserResponseDTO;
 import com.projekat.ris.dto.mappers.UserMapper;
+import com.projekat.ris.model.Role;
 import com.projekat.ris.model.User;
+import com.projekat.ris.repository.RoleRepository;
 import com.projekat.ris.repository.UserRepository;
 import com.projekat.ris.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,13 +21,26 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserResponseDTO registerUser(UserRegistrationDTO userRegistrationDTO) {
+        userRepository.findByUsername(userRegistrationDTO.getUsername())
+                .ifPresent(username -> { throw new IllegalArgumentException("Username already taken"); });
+        userRepository.findByEmail(userRegistrationDTO.getEmail())
+                .ifPresent(username -> { throw new IllegalArgumentException("Email already taken"); });
+
         User user = userMapper.toEntity(userRegistrationDTO);
-        user.setPassword(userRegistrationDTO.getPassword());
+        user.setPassword(passwordEncoder.encode(userRegistrationDTO.getPassword()));
         user.setFirstName(userRegistrationDTO.getFirstname());
         user.setLastName(userRegistrationDTO.getLastname());
+
+        if (user.getRoles() == null || user.getRoles().isEmpty()) {
+            Role roleUser = roleRepository.findByName("ROLE_USER")
+                    .orElseThrow(() -> new IllegalStateException("ROLE_USER not found in DB"));
+            user.setRoles(new HashSet<>(List.of(roleUser)));
+        }
 
         return userMapper.toResponseDTO(userRepository.save(user));
     }

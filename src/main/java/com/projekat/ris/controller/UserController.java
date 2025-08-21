@@ -6,6 +6,7 @@ import com.projekat.ris.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,6 +23,8 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
+    // TODO: ovu vrstu provere na gresku da odradim na vecinu mesta.
+    @PreAuthorize("#id == principal.id or hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDTO> getUserById(@PathVariable Long id) {
         UserResponseDTO user = userService.getUserById(id);
