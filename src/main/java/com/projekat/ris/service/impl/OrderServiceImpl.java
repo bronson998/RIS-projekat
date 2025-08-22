@@ -64,46 +64,29 @@ public class OrderServiceImpl implements OrderService {
 
         Set<OrderItem> orderItems = cart.getItems().stream()
                 .map(cartItem -> {
-                    Product product = cartItem.getProduct();
+                    var product = cartItem.getProduct();
 
-                    // 1. Validacija stanja proizvoda
-                    if (product.getQuantity() < cartItem.getQuantity()) {
-                        throw new RuntimeException("Not enough stock for product: " + product.getName());
-                    }
-
-                    // 2. Oduzmi količinu iz stanja
-                    product.setQuantity(product.getQuantity() - cartItem.getQuantity());
-
-                    // 3. Kreiraj order item
-                    OrderItem orderItem = new OrderItem();
-                    orderItem.setOrder(order);
-                    orderItem.setProduct(product);
-                    orderItem.setQuantity(cartItem.getQuantity());
-                    orderItem.setPrice(product.getPrice());
-
-                    return orderItem;
+                    OrderItem item = new OrderItem();
+                    item.setOrder(order);
+                    item.setProduct(product);
+                    item.setQuantity(cartItem.getQuantity());
+                    item.setPrice(product.getPrice());
+                    return item;
                 })
                 .collect(Collectors.toSet());
 
         order.setItems(orderItems);
 
         double total = orderItems.stream()
-                .mapToDouble(item -> item.getPrice() * item.getQuantity())
+                .mapToDouble(i -> i.getPrice() * i.getQuantity())
                 .sum();
         order.setTotalPrice(total);
 
-        // Sačuvaj order i update-uj proizvode (flush)
         Order saved = orderRepository.save(order);
 
-        // Isprazni cart
         cart.getItems().clear();
         cartRepository.save(cart);
 
         return orderMapper.toDto(saved);
-    }
-
-    @Override
-    public void deleteOrder(Long id) {
-        orderRepository.deleteById(id);
     }
 }

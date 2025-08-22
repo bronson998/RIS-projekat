@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Detail</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+<div th:replace="~{fragments/nav :: siteHeader('Order Detail')}"></div>
+
+<main class="container">
+    <div class="card" th:object="${order}">
+        <h2>Order #<span th:text="*{id}">0</span></h2>
+        <p><strong>Status:</strong> <span th:text="*{status}">PENDING</span></p>
+        <p><strong>Placed:</strong> <span th:text="*{createdAt}">2025-08-21T16:00</span></p>
+
+        <table class="table" th:if="${order.items != null}">
+            <thead>
+            <tr>
+                <th>Product</th>
+                <th class="center">Qty</th>
+                <th class="center">Price</th>
+                <th class="center">Line Total</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="it : *{items}">
+                <td th:text="${it.productName}">Product</td>
+                <td class="center" th:text="${it.quantity}">1</td>
+                <td class="center" th:text="${#numbers.formatDecimal(it.price, 1, 'NONE', 2, 'POINT')}">0.00</td>
+                <td class="center" th:text="${#numbers.formatDecimal(it.price * it.quantity, 1, 'NONE', 2, 'POINT')}">0.00</td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <th colspan="3" class="center">Total</th>
+                <th class="center" th:text="${#numbers.formatDecimal(order.totalPrice, 1, 'NONE', 2, 'POINT')}">0.00</th>
+            </tr>
+            </tfoot>
+        </table>
+
+        <div class="actions" style="margin-top:12px;">
+            <a class="btn" th:href="@{/orders}">My Orders</a>
+            <a class="btn btn-secondary" th:href="@{/products}">Continue Shopping</a>
+        </div>
+    </div>
+</main>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>My Wishlist</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+</head>
+<body>
+<div th:replace="~{fragments/nav :: siteHeader('My Wishlist')}"></div>
+
+<main class="container">
+  <div class="card centered">
+    <h2>Wishlist</h2>
+
+    <div th:if="${wishlist == null or wishlist.items == null or #lists.isEmpty(wishlist.items)}">
+      <p>Your wishlist is empty.</p>
+      <a class="btn" th:href="@{/products}">Browse Products</a>
+    </div>
+
+    <table class="table"
+           th:if="${wishlist != null and wishlist.items != null and !#lists.isEmpty(wishlist.items)}">
+      <thead>
+      <tr>
+        <th>Product</th>
+        <th class="center">Action</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="it : ${wishlist.items}">
+        <td th:text="${it.productName != null ? it.productName : 'Product #' + it.productId}">Product</td>
+        <td class="center">
+          <form class="inline-form" th:action="@{|/wishlists/remove/${it.productId}|}" method="post">
+            <button class="btn btn-danger" type="submit">Remove</button>
+          </form>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+    <div class="actions" th:if="${wishlist != null}">
+      <a class="btn" th:href="@{/products}">Continue Shopping</a>
+    </div>
+  </div>
+</main>
+</body>
+</html>

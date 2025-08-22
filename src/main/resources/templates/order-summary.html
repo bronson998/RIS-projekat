@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Checkout</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+<div th:replace="~{fragments/nav :: siteHeader('Checkout')}"></div>
+
+<main class="container">
+    <div class="card">
+        <h2>Order Summary</h2>
+
+        <div th:if="${#lists.isEmpty(cart.items)}">
+            <p>Your cart is empty.</p>
+            <a class="btn" th:href="@{/products}">Continue Shopping</a>
+        </div>
+
+        <table th:if="${!#lists.isEmpty(cart.items)}" class="table">
+            <thead>
+            <tr>
+                <th>Product</th>
+                <th class="center">Qty</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${cart.items}">
+                <td th:text="${item.productName}">Product</td>
+                <td class="center" th:text="${item.quantity}">1</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div th:if="${!#lists.isEmpty(cart.items)}" style="margin-top:12px;">
+            <p><strong>Total:</strong>
+                <span th:text="${#numbers.formatDecimal(totalPrice, 1, 'NONE', 2, 'POINT')}">0.00</span>
+            </p>
+        </div>
+
+        <form th:if="${!#lists.isEmpty(cart.items)}" th:action="@{/orders/confirm}" method="post" class="actions" style="margin-top:12px;">
+            <button class="btn" type="submit">Place Order</button>
+            <a class="btn btn-secondary" th:href="@{/carts}">Back to Cart</a>
+        </form>
+    </div>
+</main>
+</body>
+</html>

@@ -1,0 +1,43 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+<div th:fragment="siteHeader(title)" xmlns:th="http://www.thymeleaf.org"
+     xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <header class="container">
+        <h1 th:text="${title}">Page</h1>
+        <nav class="actions">
+            <a class="btn" th:href="@{/products}">Browse Products</a>
+
+            <!-- Cart only for ROLE_USER -->
+            <span sec:authorize="hasRole('USER')">
+                <a class="btn" th:href="@{/carts}">My Cart</a>
+            </span>
+
+            <span>
+                <a class="btn" th:href="@{/wishlists}" sec:authorize="hasRole('USER')">My Wishlist</a>
+            </span>
+
+            <!-- Logout shown for any authenticated user -->
+            <span sec:authorize="isAuthenticated()">
+                <span>
+                  <a class="btn" th:href="@{/chat}">Open Chat</a>
+                </span>
+                <form th:action="@{/logout}" method="post" class="inline-form">
+                  <button class="btn btn-secondary" type="submit">
+                    Logout <span sec:authentication="name"></span>
+                  </button>
+                </form>
+            </span>
+
+            <!-- Login/Register only for anonymous -->
+            <span sec:authorize="isAnonymous()">
+        <a class="btn" th:href="@{/login}">Login</a>
+        <a class="btn" th:href="@{/users/register}">Register</a>
+      </span>
+        </nav>
+    </header>
+</div>
+</body>
+</html>

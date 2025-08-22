@@ -53,7 +53,6 @@ public class WishlistServiceImpl implements WishlistService {
                     return wishlistRepository.save(newWishlist);
                 });
 
-        // check if product already exists in wishlist
         boolean exists = wishlist.getItems().stream()
                 .anyMatch(item -> item.getProduct().getId().equals(productId));
 

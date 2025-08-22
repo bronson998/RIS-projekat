@@ -1,0 +1,110 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: #f7f7f7;
+    color: #222;
+}
+
+header {
+    background: #333;
+    color: #fff;
+    padding: 1rem;
+    text-align: center;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 20px auto;
+    padding: 0 16px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+.card {
+    background: #fff;
+    padding: 16px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.card h3 {
+    margin: 0 0 8px;
+}
+
+.card p {
+    margin: 4px 0;
+    color: #555;
+}
+
+a {
+    display: inline-block;
+    margin-top: 8px;
+    text-decoration: none;
+    color: #0066cc;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.btn {
+  display: inline-block;
+  padding: 0.55rem 0.9rem;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: #0066cc;
+  color: #fff !important;
+  font-weight: 600;
+  text-decoration: none !important;
+  cursor: pointer;
+  transition: transform 0.02s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+.btn:hover { background: #0056ad; box-shadow: 0 4px 10px rgba(0,0,0,0.12); }
+.btn:active { transform: translateY(1px); }
+
+.btn-secondary { background: #555; }
+.btn-secondary:hover { background: #444; }
+
+.btn-danger { background: #cc2f2f; }
+.btn-danger:hover { background: #ad2525; }
+
+.actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+
+.inline-form { display: inline; margin: 0; }
+
+.table, .cart-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.table th, .table td,
+.cart-table th, .cart-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #eee;
+}
+.table thead th, .cart-table thead th {
+  background: #fafafa;
+  text-align: left;
+}
+.center { text-align: center; }
+
+.form input, .form select, .form textarea {
+  width: 100%;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin: 6px 0 12px;
+  background: #fff;
+}
+.form label { font-weight: 600; margin-top: 6px; display: block; }
+
+.alert { padding: 10px 12px; border-radius: 8px; margin-bottom: 12px; }
+.alert-danger { background: #fde8e8; color: #8b1e1e; }
+
+a.btn { color: #fff !important; text-decoration: none !important; margin-top: 0; }

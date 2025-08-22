@@ -8,12 +8,14 @@ import com.projekat.ris.model.User;
 import com.projekat.ris.repository.RoleRepository;
 import com.projekat.ris.repository.UserRepository;
 import com.projekat.ris.service.UserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,6 +27,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
+    @Transactional
     public UserResponseDTO registerUser(UserRegistrationDTO userRegistrationDTO) {
         userRepository.findByUsername(userRegistrationDTO.getUsername())
                 .ifPresent(username -> { throw new IllegalArgumentException("Username already taken"); });
@@ -53,6 +56,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserResponseDTO getUserByUsername(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return userMapper.toResponseDTO(user);
+    }
+
+    @Override
     public List<UserResponseDTO> getAllUsers() {
         return userRepository.findAll()
                 .stream()
@@ -65,11 +75,12 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("No user found"));
 
-        // i ovde treba odraditi verifikaciju
-        user.setEmail(userUpdateDTO.getEmail());
-        user.setPassword(userUpdateDTO.getPassword());
-        user.setFirstName(userUpdateDTO.getFirstname());
-        user.setLastName(userUpdateDTO.getLastname());
+        Optional.ofNullable(userUpdateDTO.getEmail()).ifPresent(user::setEmail);
+        if (userUpdateDTO.getPassword() != null) {
+            user.setPassword(passwordEncoder.encode(userUpdateDTO.getPassword()));
+        }
+        Optional.ofNullable(userUpdateDTO.getFirstname()).ifPresent(user::setFirstName);
+        Optional.ofNullable(userUpdateDTO.getLastname()).ifPresent(user::setLastName);
 
         User updated = userRepository.save(user);
         return userMapper.toResponseDTO(updated);

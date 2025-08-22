@@ -21,6 +21,6 @@ public class Role {
     private String name;
 
     @ManyToMany(mappedBy = "roles")
-    @ToString.Exclude // da se ne napravi beskonacna petlja?
+    @ToString.Exclude
     private Set<User> users;
 }

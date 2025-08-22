@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -52,11 +53,10 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(productDTO.getId())
                 .orElseThrow(() -> new RuntimeException("Product Not Found!"));
 
-        // treba dodati proveru da li postoje ova productDTO polja
-        product.setName(productDTO.getName());
-        product.setPrice(productDTO.getPrice());
-        product.setDescription(productDTO.getDescription());
-        product.setQuantity(productDTO.getQuantity());
+        Optional.ofNullable(productDTO.getName()).ifPresent(product::setName);
+        Optional.of(productDTO.getPrice()).ifPresent(product::setPrice);
+        Optional.ofNullable(productDTO.getDescription()).ifPresent(product::setDescription);
+        Optional.of(productDTO.getQuantity()).ifPresent(product::setQuantity);
 
         Product updated = productRepository.save(product);
         return productMapper.toDTO(updated);

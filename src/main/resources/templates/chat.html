@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <style>
+        .chat-box { min-height: 280px; border: 1px solid #eee; padding: 12px; border-radius: 8px; background: #fff; overflow-y: auto; }
+        .msg { margin: 6px 0; }
+        .msg .bubble { display: inline-block; padding: 8px 12px; border-radius: 12px; }
+        .msg.me   .bubble { background: #e6f0ff; }
+        .msg.them .bubble { background: #f1f1f1; }
+        .muted { color: #666; font-size: 12px; }
+        .actions { display: flex; gap: 8px; margin-top: 12px; }
+        .form-input { flex: 1; padding: 8px; }
+        .btn { padding: 8px 12px; border: 0; border-radius: 8px; cursor: pointer; text-decoration: none; background: #1f6feb; color: #fff; }
+        .btn.secondary { background: #e5e7eb; color: #111; }
+        ul.user-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+        ul.user-list li a { display: inline-block; }
+        .status { margin-top: 8px; font-size: 12px; color: #666; }
+    </style>
+</head>
+<body>
+<div th:replace="~{fragments/nav :: siteHeader('Chat')}"></div>
+
+<main class="container">
+
+    <!-- Directory: shown if 'users' is present -->
+    <section th:if="${users != null}" class="card" style="max-width:720px;margin:0 auto;">
+        <h2>Start a conversation</h2>
+        <p class="muted" th:text="'You are signed in as ' + ${me.username}">You are signed in as ...</p>
+        <ul class="user-list">
+            <li th:each="u : ${users}">
+                <a class="btn" th:href="@{|/chat?user=${u.username}|}" th:text="${u.username}">username</a>
+            </li>
+        </ul>
+    </section>
+
+    <!-- Conversation: shown if 'peer' is present -->
+    <section th:if="${peer != null}" class="card" style="max-width:720px;margin:0 auto;">
+        <h2>
+            <span th:text="'Chat with ' + ${peer.username}">Chat</span>
+            <a class="btn secondary" style="float:right" th:href="@{/chat}">← Back</a>
+        </h2>
+        <p class="muted" th:text="'You: ' + ${me.username}">You: ...</p>
+
+        <div id="messages" class="chat-box">
+            <div th:each="m : ${messages}"
+                 th:class="'msg ' + (${m.senderUsername} == ${me.username} ? 'me' : 'them')">
+                <div class="bubble">
+                    <small class="muted" th:text="${m.senderUsername} + ' • ' + ${#temporals.format(m.timestamp, 'yyyy-MM-dd HH:mm')}">user • time</small><br>
+                    <span th:text="${m.messageContent}">Hello!</span>
+                </div>
+            </div>
+        </div>
+
+        <form id="chatForm" class="actions" autocomplete="off">
+            <input type="text" id="messageInput" class="form-input" placeholder="Type a message...">
+            <button type="submit" class="btn" id="sendBtn">Send</button>
+        </form>
+        <div class="status" id="connStatus">Connecting…</div>
+    </section>
+
+</main>
+
+<!-- SockJS & STOMP -->
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+
+<!-- App script -->
+<script th:inline="javascript">
+    /*<![CDATA[*/
+      const hasPeer      = /*[[${peer != null}]]*/ false;
+      const meUsername   = /*[[${me.username}]]*/ '';
+      const peerUsername = /*[[${peer != null} ? ${peer.username} : '' ]]*/ '';
+
+      // Early exit if we’re just showing the directory
+      if (!hasPeer) {
+        // nothing else to wire
+      } else {
+        const statusEl = document.getElementById('connStatus');
+        const messagesEl = document.getElementById('messages');
+        const inputEl = document.getElementById('messageInput');
+        const sendBtn = document.getElementById('sendBtn');
+
+        // Auto-scroll to bottom on initial render
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+
+        // Set up WebSocket/STOMP
+        const sock = new SockJS(/*[[@{/ws}]]*/ '/ws');
+        const stomp = Stomp.over(sock);
+        stomp.debug = null; // silence console; set to console.log to debug
+
+        let connected = false;
+
+        stomp.connect({}, () => {
+          connected = true;
+          statusEl.textContent = 'Connected';
+          // Subscribe to my personal queue
+          stomp.subscribe('/user/queue/messages', (frame) => {
+            const msg = JSON.parse(frame.body);
+            appendMessage(msg);
+          });
+        }, (err) => {
+          connected = false;
+          statusEl.textContent = 'Disconnected';
+          console.error('STOMP error:', err);
+        });
+
+        // Send handler
+        document.getElementById('chatForm').addEventListener('submit', (e) => {
+          e.preventDefault();
+          const text = (inputEl.value || '').trim();
+          if (!text) return;
+          if (!connected) {
+            statusEl.textContent = 'Not connected. Please wait…';
+            return;
+          }
+          stomp.send('/app/chat.send', {}, JSON.stringify({
+            receiver: peerUsername,
+            content: text
+          }));
+          inputEl.value = '';
+        });
+
+        // UI helper
+        function appendMessage(m) {
+          const mine = m.senderUsername === meUsername;
+
+          const wrap = document.createElement('div');
+          wrap.className = 'msg ' + (mine ? 'me' : 'them');
+
+          const bubble = document.createElement('div');
+          bubble.className = 'bubble';
+
+          const ts = m.timestamp ? ('' + m.timestamp).replace('T', ' ').slice(0,16) : '';
+          bubble.innerHTML = `<small class="muted">${escapeHtml(m.senderUsername)} • ${escapeHtml(ts)}</small><br>${escapeHtml(m.messageContent)}`;
+
+          wrap.appendChild(bubble);
+          messagesEl.appendChild(wrap);
+          messagesEl.scrollTop = messagesEl.scrollHeight;
+        }
+
+        // Basic HTML escape to avoid injecting raw HTML
+        function escapeHtml(s) {
+          return String(s ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+        }
+      }
+    /*]]>*/
+</script>
+</body>
+</html>

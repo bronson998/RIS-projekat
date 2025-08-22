@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Welcome</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+</head>
+<body>
+<div th:replace="~{fragments/nav :: siteHeader('Home Page')}"></div>
+
+<main class="container">
+    <div class="actions" style="margin-bottom: 12px;">
+    <span sec:authorize="hasRole('ADMIN')">
+      <a class="btn" th:href="@{/products/new}">Add New Product</a>
+    </span>
+    </div>
+
+    <section class="grid">
+        <div class="card" th:each="p : ${featured}">
+            <h3 th:text="${p.name}">Product</h3>
+            <p th:text="${p.description}">Description</p>
+            <a class="btn" th:href="@{|/products/${p.id}|}">View</a>
+        </div>
+    </section>
+</main>
+</body>
+</html>

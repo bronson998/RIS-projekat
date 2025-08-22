@@ -9,9 +9,11 @@ import org.mapstruct.Mapping;
 public interface CartItemMapper {
     @Mapping(source="product.id", target="productId")
     @Mapping(source = "product.name", target = "productName")
+    @Mapping(source = "product.price", target = "price")
     CartItemDTO toDTO(CartItem cartItem);
 
     @Mapping(source = "productId", target = "product.id")
     @Mapping(source = "productName", target = "product.name")
+    @Mapping(target = "product.price", ignore = true)
     CartItem toEntity(CartItemDTO cartItemDTO);
 }

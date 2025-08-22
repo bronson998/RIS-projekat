@@ -19,7 +19,6 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // jedan korisnik moze da salje vise poruka, kao i receiver da prima
     @ManyToOne
     @JoinColumn(name = "sender_id", nullable = false)
     private User sender;
@@ -29,5 +28,12 @@ public class Message {
     private User receiver;
 
     private String messageContent;
-    private LocalDateTime timestamp = LocalDateTime.now();
+    private LocalDateTime timestamp;
+
+    @PrePersist
+    void onCreate() {
+        if (timestamp == null) {
+            timestamp = LocalDateTime.now();
+        }
+    }
 }

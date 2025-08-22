@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User Profile</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+<div th:replace="~{fragments/nav :: siteHeader('User Details')}"></div>
+
+<main class="container">
+    <div class="card">
+        <p><strong>Username:</strong> <span th:text="${user.username}">username</span></p>
+        <p><strong>Name:</strong> <span th:text="${user.firstname}">John</span> <span th:text="${user.lastname}">Doe</span></p>
+        <p><strong>Email:</strong> <span th:text="${user.email}">john@example.com</span></p>
+    </div>
+</main>
+</body>
+</html>

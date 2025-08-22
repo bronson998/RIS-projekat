@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Account</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+<header class="container">
+    <h1>Create your account</h1>
+    <nav class="actions">
+        <a class="btn" th:href="@{/products}">Browse Products</a>
+        <a class="btn" th:href="@{/carts}">My Cart</a>
+    </nav>
+</header>
+
+<main class="container">
+    <div class="card">
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+        <form th:action="@{/users/register}" th:object="${user}" method="post" class="form">
+            <label>First Name</label>
+            <input type="text" th:field="*{firstname}" placeholder="John" />
+
+            <label>Last Name</label>
+            <input type="text" th:field="*{lastname}" placeholder="Doe" />
+
+            <label>Username</label>
+            <input type="text" th:field="*{username}" placeholder="johndoe" required />
+
+            <label>Email</label>
+            <input type="email" th:field="*{email}" placeholder="john@example.com" required />
+
+            <label>Password</label>
+            <input type="password" th:field="*{password}" required />
+
+            <div class="actions">
+                <button class="btn" type="submit">Register</button>
+                <a class="btn btn-secondary" th:href="@{/products}">Cancel</a>
+            </div>
+        </form>
+    </div>
+</main>
+</body>
+</html>

@@ -1,55 +1,81 @@
 package com.projekat.ris.controller;
 
 import com.projekat.ris.dto.ProductDTO;
+import com.projekat.ris.service.CategoryService;
 import com.projekat.ris.service.ProductService;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
+@Controller
 @AllArgsConstructor
-@RequestMapping("/api/products")
+@RequestMapping("/products")
 public class ProductController {
     private final ProductService productService;
+    private final CategoryService categoryService;
 
     @GetMapping
-    public ResponseEntity<List<ProductDTO>> getAllProducts() {
+    public String getAllProducts(Model model) {
         List<ProductDTO> products = productService.getAllProducts();
-        return ResponseEntity.ok(products);
+        model.addAttribute("products", products);
+        return "products";
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDTO> getProductById(@PathVariable Long id) {
+    public String getProductById(@PathVariable Long id, Model model) {
         ProductDTO product = productService.getProductById(id);
-        return ResponseEntity.ok(product);
+        model.addAttribute("product", product);
+        return "product-detail";
     }
 
     @GetMapping("/name/{name}")
-    public ResponseEntity<ProductDTO> getProductByName(@PathVariable String name) {
+    public String getProductByName(@PathVariable String name, Model model) {
         ProductDTO product = productService.getProductByName(name);
-        return ResponseEntity.ok(product);
+        model.addAttribute("product", product);
+        return "product-detail";
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/new")
+    public String showCreateForm(Model model) {
+        model.addAttribute("product", new ProductDTO());
+        model.addAttribute("categories", categoryService.getAllCategories());
+        return "product-form";
+    }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<ProductDTO> addProduct(@RequestBody ProductDTO productDTO) {
+    public String addProduct(@ModelAttribute("product") ProductDTO productDTO) {
         ProductDTO created = productService.addProduct(productDTO);
-        return new ResponseEntity<>(created, HttpStatus.CREATED);
+        return "redirect:/products";
     }
 
-    @PutMapping
-    public ResponseEntity<ProductDTO> updateProduct(@RequestBody ProductDTO productDTO) {
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/edit/{id}")
+    public String editForm(@PathVariable Long id, Model model) {
+        model.addAttribute("product", productService.getProductById(id));
+        model.addAttribute("categories", categoryService.getAllCategories());
+        return "product-form";
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/update")
+    public String updateProduct(@ModelAttribute("product") ProductDTO productDTO) {
         ProductDTO updated = productService.updateProduct(productDTO);
-        return ResponseEntity.ok(updated);
+        return "redirect:/products";
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/delete/{id}")
+    public String deleteProduct(@PathVariable Long id) {
         productService.deleteProductById(id);
-        return ResponseEntity.noContent().build();
+        return "redirect:/products";
     }
 }

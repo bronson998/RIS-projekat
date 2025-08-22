@@ -18,33 +18,26 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .httpBasic(Customizer.withDefaults())
-                .exceptionHandling(e -> e.authenticationEntryPoint(
-                        (req, res, ex) -> {
-                            res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                            res.getWriter().write("Unauthorized");
-                        }
-                ))
+                .formLogin(Customizer.withDefaults())
+                .logout(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
-                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html",
-                                "/swagger-resources/**", "/webjars/**"
+                                "/swagger-resources/**", "/webjars/**", "/css/**", "/js/**", "/images/**", "/ws/**"
                         ).permitAll()
 
-                        // PUBLIC: katalog (GET) i registracija korisnika
-                        .requestMatchers(HttpMethod.GET, "/api/products/**", "/api/categories/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/users/register").permitAll()
+                        .requestMatchers("/", "/products/**").permitAll()
+                        .requestMatchers("/users/register").permitAll()
 
-                        // USER/ADMIN: privatne rute
-                        .requestMatchers("/api/carts/**", "/api/orders/**").hasAnyRole("USER","ADMIN")
-                        .requestMatchers("/api/users/**", "/api/wishlists/**").authenticated()
+                        .requestMatchers("/carts/**", "/orders/**").hasRole("USER")
+                        .requestMatchers( "/chat/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/users/**", "/wishlists/**").authenticated()
 
-                        // ADMIN: CRUD nad katalozima (primer – prilagodi svojim kontrolerima/HTTP metodama)
-                         .requestMatchers(HttpMethod.POST,   "/api/store/product/**").hasRole("ADMIN")
-                         .requestMatchers(HttpMethod.PUT,    "/api/store/product/**").hasRole("ADMIN")
-                         .requestMatchers(HttpMethod.DELETE, "/api/store/product/**").hasRole("ADMIN")
+                         .requestMatchers(HttpMethod.POST,   "/products/**").hasRole("ADMIN")
+                         .requestMatchers(HttpMethod.PUT,    "/products/**").hasRole("ADMIN")
+                         .requestMatchers(HttpMethod.DELETE, "/products/**").hasRole("ADMIN")
 
                         .anyRequest().authenticated()
                 );

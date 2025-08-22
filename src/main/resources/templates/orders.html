@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My Orders</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+<div th:replace="~{fragments/nav :: siteHeader('My Orders')}"></div>
+
+<main class="container">
+    <div class="grid" th:if="${orders != null}">
+        <div class="card" th:each="o : ${orders}">
+            <h3>Order #<span th:text="${o.id}">0</span></h3>
+            <p><strong>Status:</strong> <span th:text="${o.status}">PENDING</span></p>
+            <p><strong>Placed:</strong> <span th:text="${o.createdAt}">2025-08-21</span></p>
+            <p><strong>Total:</strong> <span th:text="${#numbers.formatDecimal(o.totalPrice, 1, 'POINT', 2, 'NONE')}">0.00</span></p>
+            <div class="actions">
+                <a class="btn" th:href="@{|/orders/${o.id}|}">View</a>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${orders == null or #lists.isEmpty(orders)}" class="card">
+        <p>You have no orders yet.</p>
+        <a class="btn" th:href="@{/products}">Start Shopping</a>
+    </div>
+</main>
+</body>
+</html>

@@ -9,7 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@EqualsAndHashCode(exclude = {"cart", "product"}) // ovo postoji da ne bi doslo do rekurzivnih dependencyja koje odu u nedogled
+@EqualsAndHashCode(exclude = {"cart", "product"}) // stops endless recursions
 public class CartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

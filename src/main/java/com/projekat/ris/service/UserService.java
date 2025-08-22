@@ -8,6 +8,7 @@ import java.util.List;
 public interface UserService {
     UserResponseDTO registerUser(UserRegistrationDTO userRegistrationDTO);
     UserResponseDTO getUserById(Long id);
+    UserResponseDTO getUserByUsername(String username);
     List<UserResponseDTO> getAllUsers();
     UserResponseDTO updateUser(Long id, UserRegistrationDTO userUpdateDTO);
     void deleteUser(Long id);
