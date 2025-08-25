@@ -10,6 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -55,7 +56,7 @@ public class ChatController {
     public record ChatPayload(String receiver, String content) {}
 
     @MessageMapping("/chat.send")
-    public void handlePrivate(@Payload ChatPayload payload, Authentication auth) {
+    public void handlePrivate(@Payload @Validated ChatPayload payload, Authentication auth) {
         chatService.send(auth.getName(), payload.receiver(), payload.content());
     }
 }

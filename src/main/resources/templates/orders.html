@@ -14,7 +14,7 @@
             <h3>Order #<span th:text="${o.id}">0</span></h3>
             <p><strong>Status:</strong> <span th:text="${o.status}">PENDING</span></p>
             <p><strong>Placed:</strong> <span th:text="${o.createdAt}">2025-08-21</span></p>
-            <p><strong>Total:</strong> <span th:text="${#numbers.formatDecimal(o.totalPrice, 1, 'POINT', 2, 'NONE')}">0.00</span></p>
+            <p><strong>Total:</strong> <span th:text="${#numbers.formatDecimal(o.totalPrice, 1, 'NONE', 2, 'POINT')}">0.00</span></p>
             <div class="actions">
                 <a class="btn" th:href="@{|/orders/${o.id}|}">View</a>
             </div>

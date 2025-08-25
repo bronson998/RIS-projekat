@@ -108,3 +108,12 @@ a:hover {
 .alert-danger { background: #fde8e8; color: #8b1e1e; }
 
 a.btn { color: #fff !important; text-decoration: none !important; margin-top: 0; }
+
+.error {
+    color: red;
+    font-size: 0.9em;
+    margin-bottom: 8px;
+}
+.form-control:invalid {
+    border-color: red;
+}

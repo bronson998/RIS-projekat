@@ -3,6 +3,7 @@ package com.projekat.ris.controller;
 import com.projekat.ris.dto.ProductDTO;
 import com.projekat.ris.service.CategoryService;
 import com.projekat.ris.service.ProductService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -62,7 +63,7 @@ public class ProductController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public String addProduct(@ModelAttribute("product") ProductDTO productDTO) {
+    public String addProduct(@ModelAttribute("product") @Valid ProductDTO productDTO) {
         ProductDTO created = productService.addProduct(productDTO);
         return "redirect:/products";
     }
@@ -77,7 +78,7 @@ public class ProductController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/update")
-    public String updateProduct(@ModelAttribute("product") ProductDTO productDTO) {
+    public String updateProduct(@ModelAttribute("product") @Valid ProductDTO productDTO) {
         ProductDTO updated = productService.updateProduct(productDTO);
         return "redirect:/products";
     }

@@ -1,5 +1,6 @@
 package com.projekat.ris.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,6 +15,7 @@ import java.util.List;
 @Builder
 public class CartDTO {
     private Long id;
+    @NotNull(message = "User ID must not be null")
     private Long userId;
     private LocalDateTime createdAt;
     private List<CartItemDTO> items;

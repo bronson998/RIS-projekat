@@ -18,6 +18,6 @@ public class HomeController {
     public String home(Model model) {
         List<ProductDTO> products = productService.getAllProducts();
         model.addAttribute("featured", products);
-        return "home";
+        return "redirect:/products";
     }
 }

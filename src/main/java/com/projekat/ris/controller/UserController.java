@@ -3,10 +3,12 @@ package com.projekat.ris.controller;
 import com.projekat.ris.dto.UserRegistrationDTO;
 import com.projekat.ris.dto.UserResponseDTO;
 import com.projekat.ris.service.UserService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -15,14 +17,13 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final UserService userService;
 
-    @GetMapping("/register")
-    public String showRegisterForm(Model model) {
-        model.addAttribute("user", new UserRegistrationDTO());
-        return "user-register"; // templates/user-register.html
-    }
-
     @PostMapping("/register")
-    public String register(@ModelAttribute("user") UserRegistrationDTO userRegistrationDTO, Model model) {
+    public String register(@ModelAttribute("user") @Valid UserRegistrationDTO userRegistrationDTO,
+                           BindingResult result,
+                           Model model) {
+        if (result.hasErrors()) {
+            return "user-register";
+        }
         try {
             userService.registerUser(userRegistrationDTO);
             return "redirect:/products";
