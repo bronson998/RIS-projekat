@@ -35,6 +35,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<ProductDTO> getProductsByCategoryId(Long categoryId) {
+        return productRepository.findByCategoryId(categoryId)
+                .stream()
+                .map(productMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public ProductDTO getProductByName(String name) {
         Product product = productRepository.findByName(name)
                 .orElseThrow(() -> new RuntimeException("Product Not Found!"));

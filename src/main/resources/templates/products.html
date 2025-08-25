@@ -16,6 +16,19 @@
     </span>
     </div>
 
+    <form th:action="@{/products/filter}" method="get" style="margin-bottom: 16px;">
+        <label for="category-select">Filter by Category:</label>
+        <select id="category-select" name="categoryId">
+            <option th:each="cat : ${categories}"
+                    th:value="${cat.id}"
+                    th:text="${cat.name}"
+                    th:selected="${cat.id} == ${selectedCategoryId}">
+            </option>
+        </select>
+        <button type="submit" class="btn">Filter</button>
+        <a th:href="@{/products}" class="btn btn-secondary">Clear</a>
+    </form>
+
     <div class="grid">
         <div th:each="product : ${products}" class="card">
             <h3 th:text="${product.name}">Product Name</h3>

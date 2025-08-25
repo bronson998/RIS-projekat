@@ -21,10 +21,20 @@ public class ProductController {
     private final ProductService productService;
     private final CategoryService categoryService;
 
+    @GetMapping("/filter")
+    public String filterByCategory(@RequestParam("categoryId") Long categoryId, Model model) {
+        List<ProductDTO> products = productService.getProductsByCategoryId(categoryId);
+        model.addAttribute("products", products);
+        model.addAttribute("categories", categoryService.getAllCategories());
+        model.addAttribute("selectedCategoryId", categoryId);
+        return "products";
+    }
+
     @GetMapping
     public String getAllProducts(Model model) {
         List<ProductDTO> products = productService.getAllProducts();
         model.addAttribute("products", products);
+        model.addAttribute("categories", categoryService.getAllCategories());
         return "products";
     }
 
