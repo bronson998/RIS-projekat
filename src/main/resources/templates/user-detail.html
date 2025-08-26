@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>User Profile</title>
@@ -13,6 +14,11 @@
         <p><strong>Username:</strong> <span th:text="${user.username}">username</span></p>
         <p><strong>Name:</strong> <span th:text="${user.firstname}">John</span> <span th:text="${user.lastname}">Doe</span></p>
         <p><strong>Email:</strong> <span th:text="${user.email}">john@example.com</span></p>
+    </div>
+<!--    <div class="actions" style="margin-top:12px;"-->
+<!--         sec:authorize="hasRole('ADMIN') or #authentication.name == ${user.username}">-->
+<!--        <a class="btn" th:href="@{|/users/edit/${user.id}|}">Edit Profile</a>-->
+<!--        <a class="btn btn-secondary" th:href="@{|/users/${user.id}/password|}">Reset Password</a>-->
     </div>
 </main>
 </body>

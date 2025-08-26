@@ -21,6 +21,10 @@
         </div>
     </div>
 
+    <div>
+        <a class="btn" th:href="@{/orders/report.pdf}">Download My Orders (PDF)</a>
+    </div>
+
     <div th:if="${orders == null or #lists.isEmpty(orders)}" class="card">
         <p>You have no orders yet.</p>
         <a class="btn" th:href="@{/products}">Start Shopping</a>

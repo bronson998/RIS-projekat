@@ -18,8 +18,13 @@
             <span>
                 <a class="btn" th:href="@{/wishlists}" sec:authorize="hasRole('USER')">My Wishlist</a>
             </span>
+
             <span sec:authorize="hasRole('USER')">
               <a class="btn" th:href="@{/orders}">My Orders</a>
+            </span>
+
+            <span sec:authorize="hasRole('USER')">
+              <a class="btn" th:href="@{/users/userInfo}">My Info</a>
             </span>
 
             <!-- Logout shown for any authenticated user -->

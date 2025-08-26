@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport
+        xmlns="http://jasperreports.sourceforge.net/jasperreports"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+        name="my_orders" pageWidth="595" pageHeight="842" columnWidth="555"
+        leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20"
+        uuid="d0e5f8d2-6630-47dd-b370-ff15852e9892">
+
+    <!-- Params -->
+    <parameter name="USERNAME" class="java.lang.String"/>
+    <parameter name="GENERATED_AT" class="java.util.Date"/>
+    <parameter name="FIRST_NAME" class="java.lang.String"/>
+    <parameter name="LAST_NAME" class="java.lang.String"/>
+    <!-- Compiled subreport passed from Spring -->
+    <parameter name="SUBREPORT" class="net.sf.jasperreports.engine.JasperReport"/>
+
+    <queryString><![CDATA[]]></queryString>
+
+    <!-- Main dataset: one row per order -->
+    <field name="id" class="java.lang.Long"/>
+    <field name="status" class="java.lang.String"/>
+    <field name="createdAt" class="java.util.Date"/>
+    <field name="totalPrice" class="java.lang.Double"/>
+    <field name="items" class="java.util.Collection"/>
+
+    <title>
+        <band height="210">
+            <staticText>
+                <reportElement x="10" y="0" width="260" height="54"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font size="16" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Izvestaj o mojim narudzbinama]]></text>
+            </staticText>
+
+            <!-- Labels -->
+            <staticText>
+                <reportElement x="10" y="60" width="240" height="30"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle"><font size="12"/></textElement>
+                <text><![CDATA[Ime]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="10" y="90" width="240" height="30"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle"><font size="12"/></textElement>
+                <text><![CDATA[Prezime]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="10" y="120" width="240" height="30"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle"><font size="12"/></textElement>
+                <text><![CDATA[Korisnicko Ime]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="10" y="150" width="240" height="30"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle"><font size="12"/></textElement>
+                <text><![CDATA[Datum Kreiranja]]></text>
+            </staticText>
+
+            <!-- Values -->
+            <textField>
+                <reportElement x="250" y="60" width="240" height="30"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle"><font size="12"/></textElement>
+                <textFieldExpression><![CDATA[$P{FIRST_NAME}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="250" y="90" width="240" height="30"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle"><font size="12"/></textElement>
+                <textFieldExpression><![CDATA[$P{LAST_NAME}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="250" y="120" width="240" height="30"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle"><font size="12"/></textElement>
+                <textFieldExpression><![CDATA[$P{USERNAME}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="250" y="150" width="240" height="30"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle"><font size="12"/></textElement>
+                <textFieldExpression><![CDATA[$P{GENERATED_AT}]]></textFieldExpression>
+            </textField>
+
+            <!-- Divider line under the last label/value row -->
+            <line>
+                <reportElement x="0" y="185" width="555" height="1"/>
+                <graphicElement>
+                    <pen lineWidth="0.75" lineColor="#888888"/>
+                </graphicElement>
+            </line>
+        </band>
+    </title>
+
+    <detail>
+        <band height="240" splitType="Stretch">
+            <!-- Order summary frame with subtle border -->
+            <frame>
+                <reportElement x="20" y="10" width="185" height="150" uuid="b7bc1d1a-6ad7-4a1d-9d8e-3b0d3e9f7c11" mode="Opaque" backcolor="#FAFAFA"/>
+                <box topPadding="6" leftPadding="8" bottomPadding="6" rightPadding="8">
+                    <pen lineWidth="0.75" lineColor="#DDDDDD"/>
+                </box>
+
+                <staticText>
+                    <reportElement x="0" y="0" width="169" height="18"/>
+                    <textElement verticalAlignment="Middle"><font isBold="true"/></textElement>
+                    <text><![CDATA[Detalji narudzbine]]></text>
+                </staticText>
+
+                <staticText>
+                    <reportElement x="0" y="26" width="80" height="18"/>
+                    <textElement verticalAlignment="Middle"><font size="10" isBold="true"/></textElement>
+                    <text><![CDATA[Naruzbina #]]></text>
+                </staticText>
+                <textField>
+                    <reportElement x="85" y="26" width="84" height="18"/>
+                    <textElement verticalAlignment="Middle"/>
+                    <textFieldExpression><![CDATA[$F{id}]]></textFieldExpression>
+                </textField>
+
+                <staticText>
+                    <reportElement x="0" y="50" width="80" height="18"/>
+                    <textElement verticalAlignment="Middle"><font size="10" isBold="true"/></textElement>
+                    <text><![CDATA[Datum]]></text>
+                </staticText>
+                <textField pattern="yyyy-MM-dd HH:mm">
+                    <reportElement x="85" y="50" width="84" height="18"/>
+                    <textElement verticalAlignment="Middle"/>
+                    <textFieldExpression><![CDATA[$F{createdAt}]]></textFieldExpression>
+                </textField>
+
+                <staticText>
+                    <reportElement x="0" y="74" width="80" height="18"/>
+                    <textElement verticalAlignment="Middle"><font size="10" isBold="true"/></textElement>
+                    <text><![CDATA[Status]]></text>
+                </staticText>
+                <textField>
+                    <reportElement x="85" y="74" width="84" height="18"/>
+                    <textElement verticalAlignment="Middle"/>
+                    <textFieldExpression><![CDATA[$F{status}]]></textFieldExpression>
+                </textField>
+
+                <staticText>
+                    <reportElement x="0" y="98" width="80" height="18"/>
+                    <textElement verticalAlignment="Middle"><font size="10" isBold="true"/></textElement>
+                    <text><![CDATA[Total]]></text>
+                </staticText>
+                <textField pattern="#,##0.00">
+                    <reportElement x="85" y="98" width="84" height="18"/>
+                    <textElement textAlignment="Right" verticalAlignment="Middle"/>
+                    <textFieldExpression><![CDATA[$F{totalPrice}]]></textFieldExpression>
+                </textField>
+            </frame>
+
+            <!-- Items subreport (table-like look handled inside the subreport) -->
+            <subreport>
+                <reportElement x="220" y="10" width="335" height="200"/>
+                <dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRMapCollectionDataSource($F{items})]]></dataSourceExpression>
+                <subreportExpression class="net.sf.jasperreports.engine.JasperReport"><![CDATA[$P{SUBREPORT}]]></subreportExpression>
+            </subreport>
+        </band>
+    </detail>
+
+    <columnFooter>
+        <band height="45"/>
+    </columnFooter>
+
+    <pageFooter>
+        <band height="54"/>
+    </pageFooter>
+
+    <summary>
+        <band height="42"/>
+    </summary>
+</jasperReport>

@@ -1,14 +1,16 @@
 package com.projekat.ris.controller;
 
-import com.projekat.ris.dto.CartDTO;
 import com.projekat.ris.dto.OrderDTO;
 import com.projekat.ris.dto.UserResponseDTO;
+import com.projekat.ris.report.ReportService;
 import com.projekat.ris.service.CartService;
 import com.projekat.ris.service.OrderService;
-import com.projekat.ris.service.ProductService;
 import com.projekat.ris.service.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperPrint;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -26,6 +28,7 @@ public class OrderController {
     private final OrderService orderService;
     private final UserService userService;
     private final CartService cartService;
+    private final ReportService reportService;
 
     @GetMapping("/checkout")
     public String checkout(Authentication auth, Model model) {
@@ -75,5 +78,15 @@ public class OrderController {
         }
 
         return user.getId();
+    }
+
+    @GetMapping(value = "/report.pdf")
+    public ResponseEntity<byte[]> myOrdersReport(Authentication auth) {
+        Long userId = currentUserId(auth);
+        byte[] pdf = reportService.myOrdersPdf(userId);
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_PDF)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=my-orders.pdf")
+                .body(pdf);
     }
 }

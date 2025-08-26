@@ -6,6 +6,7 @@ import com.projekat.ris.service.UserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -42,5 +43,11 @@ public class UserController {
         UserResponseDTO user = userService.getUserById(id);
         model.addAttribute("user", user);
         return "user-detail";
+    }
+
+    @GetMapping("/userInfo")
+    public String userInfo(Authentication auth) {
+        UserResponseDTO user = userService.getUserByUsername(auth.getName());
+        return "redirect:/users/" + user.getId();
     }
 }
