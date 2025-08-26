@@ -31,6 +31,8 @@
 
     <div class="grid">
         <div th:each="product : ${products}" class="card">
+            <img th:if="${product.imageUrl}" th:src="${product.imageUrl}" alt=""
+                 style="max-width:100%;height:auto;margin-bottom:8px;"/>
             <h3 th:text="${product.name}">Product Name</h3>
             <p th:text="${product.description}">Description</p>
             <p><strong>Price:</strong> <span th:text="${product.price}">0.0</span></p>

@@ -11,6 +11,8 @@
 
 <main class="container">
     <div class="card">
+        <img th:if="${product.imageUrl}" th:src="${product.imageUrl}" alt=""
+             style="max-width:320px;height:auto;margin-bottom:12px;"/>
         <p><strong>Description:</strong> <span th:text="${product.description}">Some description</span></p>
         <p><strong>Price:</strong> <span th:text="${product.price}">0.0</span></p>
 

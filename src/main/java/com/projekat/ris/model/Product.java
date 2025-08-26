@@ -30,7 +30,5 @@ public class Product {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "image_id")
-    private ProductImage image;
+    private String imageUrl;
 }

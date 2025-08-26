@@ -33,6 +33,9 @@ public class UserController {
         }
     }
 
+    // add reset password
+    // add update info on user
+
     @PreAuthorize("#id == principal.id or hasRole('ADMIN')")
     @GetMapping("/{id}")
     public String userDetail(@PathVariable Long id, Model model) {
