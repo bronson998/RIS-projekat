@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit User</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+<div th:replace="~{fragments/nav :: siteHeader('Edit Profile')}"></div>
+
+<main class="container">
+
+    <!-- optional flash banners -->
+    <div th:if="${alertError}" class="alert alert-danger" th:text="${alertError}" style="margin-bottom:12px;"></div>
+    <div th:if="${alertOk}" class="alert alert-success" th:text="${alertOk}" style="margin-bottom:12px;"></div>
+
+    <form th:action="@{|/users/edit/${userId}|}" th:object="${userForm}" method="post" class="card" style="max-width:520px;">
+        <!-- If you use Spring Security CSRF -->
+        <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+        <!-- keep id for safety -->
+        <input type="hidden" th:field="*{id}"/>
+
+        <label style="display:block;margin-bottom:8px;">
+            <span>Username</span><br/>
+            <input type="text" th:field="*{username}" readonly />
+        </label>
+
+        <label style="display:block;margin-bottom:8px;">
+            <span>First name</span><br/>
+            <input type="text" th:field="*{firstname}" required />
+        </label>
+
+        <label style="display:block;margin-bottom:8px;">
+            <span>Last name</span><br/>
+            <input type="text" th:field="*{lastname}" required />
+        </label>
+
+        <label style="display:block;margin-bottom:16px;">
+            <span>Email</span><br/>
+            <input type="email" th:field="*{email}" required />
+        </label>
+
+        <div class="actions" style="display:flex;gap:8px;">
+            <button type="submit" class="btn">Save</button>
+            <a th:href="@{|/users/${userId}|}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</main>
+</body>
+</html>

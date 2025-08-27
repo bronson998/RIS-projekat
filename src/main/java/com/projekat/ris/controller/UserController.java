@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @AllArgsConstructor
@@ -34,9 +35,6 @@ public class UserController {
         }
     }
 
-    // add reset password
-    // add update info on user
-
     @PreAuthorize("#id == principal.id or hasRole('ADMIN')")
     @GetMapping("/{id}")
     public String userDetail(@PathVariable Long id, Model model) {
@@ -49,5 +47,38 @@ public class UserController {
     public String userInfo(Authentication auth) {
         UserResponseDTO user = userService.getUserByUsername(auth.getName());
         return "redirect:/users/" + user.getId();
+    }
+
+    @GetMapping("/{id}/password")
+    public String showPasswordForm(@PathVariable Long id, Model model) {
+        model.addAttribute("userId", id);
+        return "user-password-reset";
+    }
+
+    @PostMapping("/{id}/password")
+    public String resetPassword(@PathVariable Long id,
+                                @RequestParam String password,
+                                RedirectAttributes redirectAttributes) {
+        UserResponseDTO userResponseDTO = userService.updatePassword(id, password);
+        redirectAttributes.addFlashAttribute("alertOk", "Password successfully changed!");
+        return "redirect:/users/" + id;
+    }
+
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable Long id, Model model){
+        UserResponseDTO userResponseDTO = userService.getUserById(id);
+
+        model.addAttribute("userForm", userResponseDTO);
+        model.addAttribute("userId", id);
+        return "user-edit";
+    }
+
+    @PostMapping("/edit/{id}")
+    public String updateUser(@PathVariable Long id,
+                             @ModelAttribute("userForm") UserResponseDTO userResponseDTO,
+                             RedirectAttributes redirectAttributes) {
+        UserResponseDTO user = userService.updateUser(id, userResponseDTO);
+        redirectAttributes.addFlashAttribute("alertOk", "User profile updated!");
+        return "redirect:/users/" + id;
     }
 }

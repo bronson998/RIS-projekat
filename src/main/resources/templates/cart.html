@@ -42,25 +42,7 @@
     </section>
 
     <section>
-        <h2>Add Product to Cart</h2>
-        <form th:action="@{/carts/items/add}" method="post">
-            <label for="productId">Product:</label>
-            <select name="productId" id="productId" required>
-                <option value="" disabled selected>Select a product</option>
-                <option th:each="p : ${products}"
-                        th:value="${p.id}"
-                        th:text="${p.name}">
-                </option>
-            </select>
-
-            <label for="quantity">Quantity:</label>
-            <input type="number" name="quantity" id="quantity" value="1" min="1" required />
-
-            <button type="submit">Add to Cart</button>
-        </form>
-    </section>
-
-    <section>
+        <a class="btn" th:href="@{/products}">Continue Shopping</a>
         <div class="actions"
              th:if="${cart.items != null and !#lists.isEmpty(cart.items)}"
              style="margin-top:12px;">
