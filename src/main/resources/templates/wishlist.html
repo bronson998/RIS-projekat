@@ -12,9 +12,8 @@
   <div class="card centered">
     <h2>Wishlist</h2>
 
-    <div th:if="${wishlist == null or wishlist.items == null or #lists.isEmpty(wishlist.items)}">
+    <div th:if="${#lists.isEmpty(wishlist.items)}">
       <p>Your wishlist is empty.</p>
-      <a class="btn" th:href="@{/products}">Browse Products</a>
     </div>
 
     <table class="table"

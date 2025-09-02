@@ -19,6 +19,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class UserController {
     private final UserService userService;
 
+    @GetMapping("/register")
+    public String showRegistrationForm(Model model) {
+        model.addAttribute("user", new UserRegistrationDTO());
+        return "user-register";
+    }
+
     @PostMapping("/register")
     public String register(@ModelAttribute("user") @Valid UserRegistrationDTO userRegistrationDTO,
                            BindingResult result,

@@ -25,6 +25,18 @@
                 <button type="submit" class="btn btn-secondary">Add to Wishlist</button>
               </form>
             </span>
+            <span sec:authorize="hasRole('USER')">
+                <form class="inline-form"
+                      th:action="@{/carts/items/add}"
+                      method="post"
+                      th:if="${product.quantity > 0}">
+                    <input type="hidden" name="productId" th:value="${product.id}"/>
+                    <input type="hidden" name="quantity" th:value="1"/>
+                    <input type="hidden" name="redirect" value="/products"/>
+                    <button type="submit" class="btn btn-secondary">Add to Cart</button>
+                </form>
+                <button th:if="${product.quantity == 0}" class="btn btn-secondary" disabled>Out of stock</button>
+            </span>
             <span sec:authorize="hasRole('ADMIN')">
                 <a th:href="@{|/products/edit/${product.id}|}" class="btn">Edit</a>
                 <a th:href="@{|/products/delete/${product.id}|}" class="btn btn-danger"

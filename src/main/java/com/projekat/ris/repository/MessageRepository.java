@@ -13,7 +13,7 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
             select m from Message m
             where (m.sender = :u1 and m.receiver= :u2)
                or (m.sender = :u2 and m.receiver= :u1) 
-            order by m.timestamp desc
+            order by m.timestamp asc
             """)
     List<Message> findConversation(User u1, User u2);
 
